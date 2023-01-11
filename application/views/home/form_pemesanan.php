@@ -40,7 +40,8 @@
                                                 <i class="fas fa-user"></i>
                                             </div>
                                         </div>
-                                        <input type="text" name="nama" class="form-control phone-number" id="nama">
+                                        <input type="text" name="nama" class="form-control phone-number" id="nama" required>
+                                        <?= form_error('name') ?>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -65,7 +66,7 @@
                                                 <i class="fas fa-phone"></i>
                                             </div>
                                         </div>
-                                        <input type="email" name="email" class="form-control phone-number" id="email">
+                                        <input type="email" name="email" class="form-control phone-number" id="email" aria-describedby="emailHelp" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -76,7 +77,7 @@
                                                 <i class="fas fa-phone"></i>
                                             </div>
                                         </div>
-                                        <input type="text" name="nomorwa" class="form-control phone-number" id="nomorwa">
+                                        <input type="text" name="nomorwa" class="form-control phone-number" id="nomorwa" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -87,7 +88,7 @@
                                                 <i class="fas fa-map-location"></i>
                                             </div>
                                         </div>
-                                        <textarea name="alamat" class="form-control" id="alamat" cols="30" rows="10"></textarea>
+                                        <textarea name="alamat" class="form-control" id="alamat" cols="30" rows="10" required></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +98,7 @@
                                     <div class="col-sm-12 col-md-12">
                                         <div id="image-preview" class="image-preview m-auto">
                                             <label for="image-upload" id="image-label">Choose File</label>
-                                            <input type="file" name="file" id="image-upload" />
+                                            <input type="file" name="file" id="image-upload" required />
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +126,7 @@
                         <h6 class="card-title m-0"><?= ucwords($kendaraan[0]['nama_kendaraan']) ?> <sup><?= ucwords($kendaraan[0]['tahun']) ?> </sup></h6>
                         <span><?= ucwords($kendaraan[0]['nama_merek']) ?> </span>
                         <div class="card-image position-absolute" style="-webkit-transform: scaleX(-1);transform: scaleX(-1);">
-                            <img src="<?= base_url('templates') ?>/assets/img/products/audi.png" alt="" class="w-75">
+                            <img src="<?= base_url('templates') ?>/assets/img/products/<?= $kendaraan[0]['gambar'] ?>" alt="" class="w-75">
                         </div>
                     </div>
                     <div class="card p-2 border">
@@ -186,105 +187,147 @@
                 </button>
             </div>
             <div class="invoice m-0">
-                <form action="">
-
+                <form action="<?= base_url('home/reservasi_pembayaran') ?>" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" value="" id="id-booking-modal" name="id-booking">
+                    <input type="hidden" value="" id="id-client-modal" name="id-client">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <img src="<?= base_url() ?>templates/assets/img/drawkit/Checkmark.svg" alt="">
+                            <h6 class="text-center text-dark"><b>PESANAN ANDA BERHASIL DIBUAT</b></h6>
+                            <p class="text-center text-dark mb-0"><b>ID BOOKING #<span id="idbooking-modal">1923</span></b></p>
+                            <small class="text-center text-dark"><b id="tanggal-booking-modal"><?= date('d M Y') ?></b></small>
+                        </div>
+                    </div>
+                    <div class="invoice-print mt-5">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Nama</label>
+                                    <p> <b id="nama-modal">Muhammad Birly Yahya</b> </p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <p> <b id="email-modal">birlypecker123@gmail.com</b> </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Jenis Kelamin</label>
+                                    <p> <b id="gender-modal">Laki-laki</b> </p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label>Alamat</label>
+                                    <p> <b id="nomorwa-modal">08515855158</b> </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <h6>Invoice #<span id="idbooking-modal">1923</span></h6>
+                            </div>
+                            <div class="col-6">
+                                <label class="select-label" for="jenis-pembayaran">Pilih Pembayaran</label>
+                                <select class="selectric form-control" id="jenis-pembayaran" name="jenis-pembayaran">
+                                    <option value="DP 50%">Uang Muka 50%</option>
+                                    <option value="Lunas 100%">Lunas 100%</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <div class="dropdown" style="display: grid;">
+                                    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Metode Pembayaran
+                                    </button>
+                                    <div class="dropdown-menu w-100" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                        <a class="dropdown-item" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-selected="false" onclick="metode('BCA')">BCA</a>
+                                        <a class="dropdown-item" active show id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-selected="true" onclick="metode('BNI')">BNI</a>
+                                        <a class="dropdown-item" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" onclick="metode('DANA')">DANA</a>
+                                    </div>
+                                </div>
+                                <div class="col-12 p-0">
+                                    <div class="tab-content" id="nav-tabContent">
+                                        <div class="tab-pane fade active" id="list-home" role="tabpanel" aria-labelledby="list-home-list" name="panel-BCA">
+                                            <p class="text-center mt-2"> <b>9696 0812329128</b> </p>
+                                            1. Buka menu transaksi<br>
+                                            2. klik transfer<br>
+                                            3. Klik BCA transfer<br>
+                                            4. Masukan Kode <b>9696 0812329128</b><br>
+                                            5. Periksa kembali rincian pembayaran<br>
+                                            6. Masukan pin untuk melakukan konfirmasi <br>
+                                        </div>
+                                        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list" name="panel-BNI">
+                                            <p class="text-center mt-2"> <b>8888 0812329128</b> </p>
+                                            1. Buka menu transaksi<br>
+                                            2. klik transfer<br>
+                                            3. Klik BNI transfer<br>
+                                            4. Masukan Kode <b>9696 0812329128</b><br>
+                                            5. Periksa kembali rincian pembayaran<br>
+                                            6. Masukan pin untuk melakukan konfirmasi <br>
+                                        </div>
+                                        <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list" name="panel-DANA">
+                                            <p class="text-center mt-2"> <b>0812329128</b> </p>
+                                            1. Buka menu transaksi<br>
+                                            2. klik transfer<br>
+                                            3. Klik DANA transfer<br>
+                                            4. Masukan Kode <b>9696 0812329128</b><br>
+                                            5. Periksa kembali rincian pembayaran<br>
+                                            6. Masukan pin untuk melakukan konfirmasi <br>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" value="" name="metode">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <input type="file" name="img" class="file" accept="image/*" style="visibility: hidden; position:absolute;">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" disabled placeholder="Upload Pembayaran" id="file">
+                                    <div class="input-group-append">
+                                        <button type="button" class="browse btn btn-primary">Browse...</button>
+                                    </div>
+                                </div>
+                                <div class="mt-4" style="text-align:center;">
+                                    <img src="<?= base_url('templates/assets/img/p-250.png') ?>" id="preview" class="img-thumbnail" style="max-height: 400px;">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="text-md-right">
+                            <div class="float-lg-left mb-lg-0 mb-3">
+                                <button type="submit" class="btn btn-primary btn-icon icon-left"><i class="fas fa-credit-card"></i> Process Payment</button>
+                                <button type="reset" class="btn btn-danger btn-icon icon-left"><i class="fas fa-times"></i> Cancel</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="invoice2">
+    <div class="modal-dialog" role="document" style="max-width: 700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="invoice m-0">
                 <div class="row">
                     <div class="col-12 text-center">
                         <img src="<?= base_url() ?>templates/assets/img/drawkit/Checkmark.svg" alt="">
-                        <h6 class="text-center text-dark"><b>PESANAN ANDA BERHASIL DIBUAT</b></h6>
-                        <p class="text-center text-dark mb-0"><b>ID BOOKING</b></p>
-                        <small class="text-center text-dark"><b><?= date('d M Y') ?></b></small>
+                        <h6 class="text-center text-dark"><b>SUCCESS</b></h6>
                     </div>
                 </div>
                 <div class="invoice-print mt-5">
                     <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Nama</label>
-                                <p id="nama-modal"> <b>Muhammad Birly Yahya</b> </p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <p id="email-modal"> <b>birlypecker123@gmail.com</b> </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Jenis Kelamin</label>
-                                <p id="gender-modal"> <b>Laki-laki</b> </p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Alamat</label>
-                                <p id="nomorwa-modal"> <b>Jakarta</b> </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <h6>Invoice #19282</h6>
-                        </div>
-                        <div class="col-6">
-                                <select class="selectric form-control" id="gender" name="gender">
-                                    <option value="laki-laki">Uang Muka 50%</option>
-                                    <option value="perempuan">Lunas 100%</option>
-                                </select>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-6">
-                            <div class="dropdown" style="display: grid;">
-                                <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Easy Dropdown
-                                </button>
-                                <div class="dropdown-menu w-100" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                    <a class="dropdown-item" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-selected="false">BCA</a>
-                                    <a class="dropdown-item" active show id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-selected="true">BNI</a>
-                                    <a class="dropdown-item" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab">DANA</a>
-                                </div>
-                            </div>
-                            <div class="col-12 p-0">
-                                <div class="tab-content" id="nav-tabContent">
-                                    <div class="tab-pane fade active show" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
-                                        <p class="text-center mt-2"> <b>9696 0812329128</b> </p>
-                                        1. Buka menu transaksi<br>
-                                        2. klik transfer<br>
-                                        3. Klik BCA transfer<br>
-                                        4. Masukan Kode <b>9696 0812329128</b><br>
-                                        5. Periksa kembali rincian pembayaran<br>
-                                        6. Masukan pin untuk melakukan konfirmasi   <br>
-                                    </div>
-                                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
-                                        Deserunt cupidatat anim ullamco ut dolor anim sint nulla amet incididunt tempor ad ut pariatur officia culpa laboris occaecat. Dolor in nisi aliquip in non magna amet nisi sed commodo proident anim deserunt nulla veniam occaecat reprehenderit esse ut eu culpa fugiat nostrud pariatur adipisicing incididunt consequat nisi non amet.
-                                    </div>
-                                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
-                                        In quis non esse eiusmod sunt fugiat magna pariatur officia anim ex officia nostrud amet nisi pariatur eu est id ut exercitation ex ad reprehenderit dolore nostrud sit ut culpa consequat magna ad labore proident ad qui et tempor exercitation in aute veniam et velit dolore irure qui ex magna ex culpa enim anim ea mollit consequat ullamco exercitation in.
-                                    </div>
-                                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-                                        Lorem ipsum culpa in ad velit dolore anim labore incididunt do aliqua sit veniam commodo elit dolore do labore occaecat laborum sed quis proident fugiat sunt pariatur. Cupidatat ut fugiat anim ut dolore excepteur ut voluptate dolore excepteur mollit commodo.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div id="image-preview" class="image-preview" style="width:100%;">
-                                <label for="image-upload" id="image-label">Choose File</label>
-                                <input type="file" name="file" id="image-upload" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="text-md-right">
-                    <div class="float-lg-left mb-lg-0 mb-3">
-                        <button class="btn btn-primary btn-icon icon-left"><i class="fas fa-credit-card"></i> Process Payment</button>
-                        <button class="btn btn-danger btn-icon icon-left"><i class="fas fa-times"></i> Cancel</button>
+                        <p>Pesanan Anda Berhasil dibuat!</p>
                     </div>
                 </div>
             </div>

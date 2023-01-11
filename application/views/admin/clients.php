@@ -10,21 +10,27 @@
                         <tr>
                             <th>#</th>
                             <th>Name</th>
-                            <th>Tanggal Transaksi</th>
+                            <th>Nomor</th>
+                            <th>Email</th>
+                            <th>Tanggal Order</th>
                             <th>Tanggal Ambil - Drop</th>
                             <th>Kendaraan</th>
                             <th>Action</th>
                         </tr>
+                        <?php foreach($client as $c): ?>
                         <tr>
-                            <td>1</td>
-                            <td>Irwansyah Saputra</td>
-                            <td>2017-01-09</td>
-                            <td>2017-01-09 - </td>
+                            <td><?= $c['id_client'] ?></td>
+                            <td><?= $c['nama_client'] ?></td>
+                            <td><?= $c['no_contact'] ?></td>
+                            <td><?= $c['email_client'] ?></td>
+                            <td><?= $c['tanggal_booking'] ?></td>
+                            <td><?php $data = date_create($c['tanggal_ambil']); echo date_format($data, 'Y-m-d') ?> - <?php $data = date_create($c['tanggal_ambil']); echo date_format($data, 'Y-m-d') ?></td>
                             <td>
                                 Nissan
                             </td>
                             <td><a href="#" class="btn btn-danger"><i class="fa fa-times"></i></a></td>
                         </tr>
+                        <?php endforeach; ?>
                     </table>
                 </div>
             </div>

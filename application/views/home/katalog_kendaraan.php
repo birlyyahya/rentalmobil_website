@@ -2,15 +2,16 @@
         <nav class="navbar navbar-expand-lg bg-transparent main-navbar p-0 shadow-sm" style="position: relative; left:0;">
             <div class="container px-0">
                 <div class="container-fluid p-0">
-                    <a href="index.html" class="navbar-brand sidebar-gone-hide text-dark">Rental ANNAS</a>
-                    <a href="#" class="nav-link sidebar-gone-show" data-toggle="sidebar"><i class="fas fa-bars"></i></a>
+                    <a href="<?= base_url('home') ?>" class="navbar-brand sidebar-gone-hide text-dark">Rental ANNAS</a>
+                    <a href="<?= base_url('home') ?>" class="nav-link sidebar-gone-show" data-toggle="sidebar"><i class="fas fa-bars"></i></a>
                     <ul class="navbar-nav navbar-right">
                         <ul class="navbar-nav mr-5">
-                            <li class="nav-item"><a href="#" class="nav-link  text-dark">FAQ</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link text-dark">About</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link text-dark">Server Status</a></li>
+                            <li class="nav-item"><a href="<?= base_url('home') ?>" class="nav-link  text-dark">FAQ</a></li>
+                            <li class="nav-item"><a href="<?= base_url('home') ?>" class="nav-link text-dark">About</a></li>
                         </ul>
-                        <button class="btn btn-danger">Kelola Booking</button>
+                        <a href="<?= base_url('home/cari_booking') ?>">
+                            <button class="btn btn-danger">Kelola Booking</button>
+                        </a>
                     </ul>
                 </div>
             </div>
@@ -98,35 +99,82 @@
                                     <span class="selectgroup-button">Direkomendasikan</span>
                                 </label>
                                 <label class="selectgroup-item">
-                                    <input type="radio" name="value" value="100" class="selectgroup-input">
+                                    <input type="radio" name="value" value="100" class="selectgroup-input" onclick="sortMeBy('data-price', '#element', '.elementData', 'asc');">
                                     <span class="selectgroup-button">Harga Termurah</span>
                                 </label>
                                 <label class="selectgroup-item">
-                                    <input type="radio" name="value" value="100" class="selectgroup-input">
+                                    <input type="radio" name="value" value="100" class="selectgroup-input" onclick="sortMeBy('data-price', '#element', '.elementData', 'desc');">
                                     <span class="selectgroup-button">Harga Termahal</span>
                                 </label>
                             </div>
                         </div>
                         <hr>
-                        <div class="row" style="height: 850px; overflow-y:auto;">
-                            <?php foreach ($data as $d) : ?>
-                                <div class="col-12">
+                        <div class="row" style="height: 850px; overflow-y:auto;" id="element">
+                            <?php if (!empty($ready)) { ?>
+                                <div class="col-12 alert alert-primary">Pilihan yang dicari</div>
+                                <?php foreach ($ready as $r) : ?>
+                                    <div class="col-12 mb-5 elementData" id="elementData" data-price="<?= $r['harga'] ?>">
+                                        <div class="card mb-3">
+                                            <div class="row g-0">
+                                                <div class="col-md-4">
+                                                    <img src="<?= base_url('templates') ?>/assets/img/products/<?= $r['gambar'] ?>" alt="" class="w-100">
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-7">
+                                                                <h5 class="card-title"><?= ucwords($r['nama_kendaraan']) ?><sup><small> - <?= $r['tahun'] ?></small></sup></h5>
+                                                                <span><?= ucwords($r['nama_merek']) ?></span>
+                                                                <div class="row mt-2">
+                                                                    <div class="col-12">
+                                                                        <div class="d-flex justify-content-between">
+                                                                            <p><i class="fa fa-user mr-2"></i> <?= ucwords($r['seats']) ?> Kursi</p>
+                                                                            <p><i class="fa fa-gas-pump  mr-2"></i> 45L</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <p><i class="fa fa-car mr-2"></i> <?= ucwords($r['mesin']) ?></p>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <p><i class="fa fa-gauge mr-2"></i> <?= ucwords($r['kilometer']) ?> ++</p>
+                                                                    </div>
+                                                                </div>
+                                                                <p class="card-text"><small class="text-muted"><i class="fa fa-location-pin mr-2"></i> Yogyakarta</small></p>
+                                                            </div>
+                                                            <div class="col-5 text-right align-self-end">
+                                                                <p> <b>Harga Per-hari</b></p>
+                                                                <h5 class="harga-katalog">Rp <?= number_format($r['harga'], 2, '.') ?></h5>
+                                                                <a href="<?= base_url('home/detail_kendaraan?id=') . $r['id_kendaraan'] . '&tanggalambil=' . $tanggal['tanggal_ambil'] . '&tanggalkembali=' . $tanggal['tanggal_keluar'] . '&waktu=' . $tanggal['waktu'] ?>" class="btn btn-danger">Booking</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php
+                            } else {
+                            } ?>
+                            <div class="col-12 alert alert-success">Pilihan lain tersedia</div>
+                            <?php foreach ($rekomendasi as $d) : ?>
+                                <div class="col-12 elementData" id="elementData" data-price="<?= $d['harga'] ?>">
                                     <div class="card mb-3">
                                         <div class="row g-0">
                                             <div class="col-md-4">
-                                                <img src="<?= base_url('templates') ?>/assets/img/products/audi.png" alt="" class="w-100">
+                                                <img src="<?= base_url('templates') ?>/assets/img/products/<?= $d['gambar'] ?>" alt="" class="w-100">
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col-7">
-                                                            <h5 class="card-title"><?= ucwords($d['nama_kendaraan']) ?><sup>2019</sup></h5>
+                                                            <h5 class="card-title"><?= ucwords($d['nama_kendaraan']) ?> <sup><small> - <?= $d['tahun'] ?></small></sup></h5>
                                                             <span><?= ucwords($d['nama_merek']) ?></span>
                                                             <div class="row mt-2">
                                                                 <div class="col-12">
                                                                     <div class="d-flex justify-content-between">
                                                                         <p><i class="fa fa-user mr-2"></i> <?= ucwords($d['seats']) ?> Kursi</p>
-                                                                        <p><i class="fa fa-suitcase mr-2"></i> 20L</p>
+                                                                        <p><i class="fa fa-gas-pump mr-2"></i> 45L</p>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-12">
@@ -140,8 +188,8 @@
                                                         </div>
                                                         <div class="col-5 text-right align-self-end">
                                                             <p> <b>Harga Per-hari</b></p>
-                                                            <h5>Rp <?= number_format($d['harga'],2,'.') ?></h5>
-                                                            <a  href="<?= base_url('home/detail_kendaraan?id=').$d['id_kendaraan'].'&tanggalambil='.$tanggal['tanggal_ambil'].'&tanggalkembali='.$tanggal['tanggal_keluar'].'&waktu='.$tanggal['waktu'] ?>" class="btn btn-danger">Booking</a>
+                                                            <h5 class="harga-katalog">Rp <?= number_format($d['harga'], 2, '.') ?></h5>
+                                                            <a href="<?= base_url('home/detail_kendaraan?id=') . $d['id_kendaraan'] . '&tanggalambil=' . $tanggal['tanggal_ambil'] . '&tanggalkembali=' . $tanggal['tanggal_keluar'] . '&waktu=' . $tanggal['waktu'] ?>" class="btn btn-danger">Booking</a>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -40,6 +40,7 @@
                     </div>
                 </form>
                 <ul class="navbar-nav navbar-right">
+                    <li><a href="<?= base_url() ?>" class="nav-link">Visit Site</a></li>
                     <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep"><i class="far fa-bell"></i></a>
                         <div class="dropdown-menu dropdown-list dropdown-menu-right">
                             <div class="dropdown-header">Notifications
@@ -168,7 +169,7 @@
     <script src="<?= base_url() ?>templates/node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
     <script src="<?= base_url() ?>templates/node_modules/bootstrap-daterangepicker/daterangepicker.js"></script>
     <script src="<?= base_url() ?>templates/node_modules/izitoast/dist/js/iziToast.min.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- Template JS File -->
     <script src="<?= base_url() ?>templates/assets/js/scripts.js"></script>
     <script src="<?= base_url() ?>templates/assets/js/custom.js"></script>
@@ -177,9 +178,17 @@
     <script src="<?= base_url('templates/assets/js/page/') . $javascript ?>"></script>
 
     <script>
+        $(document).ready(function() {
+            window.setTimeout(function() {
+                $(".message").fadeTo(500, 0).slideUp(500, function() {
+                    $(this).remove();
+                });
+            }, 1000);
+        })
+
         function filter(obj) {
             var id = obj.id;
-            $('#label,#nama,#merek,#seat,#kilometer,#tahun,#harga,#status').text('');
+            $('#label,#nama,#merek,#seat,#kilometer,#tahun,#harga,#status,#tanggal_kembali,#tanggal_ambil,#tanggal_transaksi').text('');
             $.ajax({
                 url: '<?= base_url('admin/getKendaraanFilter') ?>',
                 method: 'POST',
@@ -187,9 +196,12 @@
                     filter: id
                 },
                 success: function(result) {
+                    document.getElementById('tanggal_ambil').innerHTML = 'Tanggal Ambil';
+                    document.getElementById('tanggal_kembali').innerHTML = 'Tanggal Kembali';
+                    document.getElementById('tanggal_transaksi').innerHTML = 'Tanggal Transaksi';
                     $('#list_items').html(result);
                     console.log(result);
-                    window.history.pushState("Data", "Title", "<?php echo base_url(); ?>admin/kendaraan/mobil?="+id);
+                    window.history.pushState("Data", "Title", "<?php echo base_url(); ?>admin/kendaraan/mobil?=" + id);
                 }
             });
         }
@@ -205,9 +217,26 @@
                 },
                 success: function(result) {
                     $('#list_items').html(result);
-                    window.history.pushState("Details", "Title", "<?php echo base_url(); ?>admin/kendaraan/mobil?="+id);
+                    window.history.pushState("Details", "Title", "<?php echo base_url(); ?>admin/kendaraan/mobil?=" + id);
                 }
             });
+        }
+
+        function detailTransaksi(idbooking, idtransaksi) {
+            const pay = document.querySelector('#payment > address ');
+            $.ajax({
+                url: '<?= base_url('admin/getDataPembayaranByIdTransaksi') ?>',
+                method: 'POST',
+                data: {
+                    detail: idtransaksi
+                },
+                success: function(result) {
+                    pay.innerHTML = '<strong>Payment History </strong> : <br>' + result;
+                    $('#invoice' + idbooking).modal('show');
+                }
+            });
+
+
         }
     </script>
 </body>

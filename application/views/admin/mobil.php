@@ -2,7 +2,7 @@
     <div class="section-header">
         <h1>Kendaraan</h1>
         <div class="section-header-button">
-            <a href="<?= base_url('admin/tambah') ?>" class="btn btn-primary">Tambah Kendaraan</a>
+            <a href="<?= base_url('admin/tambahkendaraan') ?>" class="btn btn-primary">Tambah Kendaraan</a>
         </div>
         <div class="section-header-breadcrumb">
             <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
@@ -15,23 +15,22 @@
         <p class="section-lead">
             You can manage all posts, such as editing, deleting and more.
         </p>
-
         <div class="row">
             <div class="col-12">
                 <div class="card mb-0">
                     <div class="card-body">
                         <ul class="nav nav-pills">
                             <li class="nav-item">
-                                <a class="nav-link active" href="<?= base_url('admin/kendaraan') ?>">All <span class="badge badge-white">5</span></a>
+                                <a class="nav-link active" href="<?= base_url('admin/kendaraan') ?>">All <span class="badge badge-white"><?= count($kendaraan) ?></span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="cursor: pointer;" onclick="filter_ready(this)" id="ready">Ready <span class="badge badge-primary">1</span></a>
+                                <a class="nav-link" style="cursor: pointer;" onclick="filter_ready(this)" id="ready">Ready <span class="badge badge-primary"><?= count($ready) ?></span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="cursor: pointer;" onclick="filter(this)" id="booked">Booked <span class="badge badge-primary">1</span></a>
+                                <a class="nav-link" style="cursor: pointer;" onclick="filter(this)" id="booked">Booked <span class="badge badge-primary"><?= count($booked) ?></span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" style="cursor: pointer;" onclick="filter(this)" id="away">Away <span class="badge badge-primary">0</span></a>
+                                <a class="nav-link" style="cursor: pointer;" onclick="filter(this)" id="away">Away <span class="badge badge-primary"><?= count($away) ?></span></a>
                             </li>
                         </ul>
                     </div>
@@ -68,6 +67,9 @@
                         <div class="clearfix mb-3"></div>
 
                         <div class="table-responsive">
+                            <?php if (!empty($this->session->userdata('message'))) {
+                                echo $this->session->userdata('message');;
+                            }else {} ?>
                             <table class="table table-striped">
                                 <tr>
                                     <th class="text-center pt-2">
@@ -78,9 +80,9 @@
                                     </th>
                                     <th>Nama Kendaraan</th>
                                     <th>Merek</th>
-                                    <th>Seats</th>
-                                    <th>Kilometer</th>
-                                    <th>Tahun</th>
+                                    <th id="tanggal_transaksi">Seats</th>
+                                    <th id="tanggal_ambil">Kilometer</th>
+                                    <th id="tanggal_kembali">Tahun</th>
                                     <th>harga</th>
                                     <th>Status</th>
                                 </tr>
@@ -95,11 +97,10 @@
                                             </td>
                                             <td class="text-capitalize" id="nama"><?= ucwords($mobil['nama_kendaraan']) ?>
                                                 <div class="table-links">
-                                                    <a href="#">View</a>
                                                     <div class="bullet"></div>
                                                     <a href="#">Edit</a>
                                                     <div class="bullet"></div>
-                                                    <a href="#" class="text-danger">Trash</a>
+                                                    <a onclick="return confirm('Are you sure you want to delete?');" href="<?= base_url('admin/deleteKendaraan/').$mobil['id_kendaraan'] ?>" class="text-danger">Trash</a>
                                                 </div>
                                             </td>
                                             <td class="text-capitalize" id="merek">

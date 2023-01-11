@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="<?= base_url() ?>templates/node_modules/owl.carousel/dist/assets/owl.theme.default.min.css">
     <link rel="stylesheet" href="<?= base_url() ?>templates/node_modules/selectric/public/selectric.css">
     <link rel="stylesheet" href="<?= base_url() ?>templates/node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css">
+
     <!-- Template CSS -->
     <link rel="stylesheet" href="<?= base_url() ?>templates/assets/css/style.css">
     <link rel="stylesheet" href="<?= base_url() ?>templates/assets/css/components.css">
@@ -25,17 +26,17 @@
 <body>
     <div class="col-12 p-0 bg-white">
         <?= $contents ?>
-        <section id="navbar-footer">
+        <section id="navbar-footer content-justify-between">
             <nav class="bg-danger">
                 <ul class="nav justify-content-center">
                     <li class="nav-item ">
-                        <a class="nav-link active text-light" href="#" style="font-weight: bolder;">Home</a>
+                        <a class="nav-link active text-light" href="<?= base_url('home') ?>" style="font-weight: bolder;">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">About</a>
+                        <a class="nav-link text-light" href="<?= base_url('home') ?>">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="#">FAQ</a>
+                        <a class="nav-link text-light" href="<?= base_url('home') ?>">FAQ</a>
                     </li>
                 </ul>
             </nav>
@@ -74,18 +75,26 @@
     <script src="<?= base_url() ?>templates/node_modules/jquery_upload_preview/assets/js/jquery.uploadPreview.min.js"></script>
     <script src="<?= base_url() ?>templates/node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
     <script src="<?= base_url() ?>templates/node_modules/bootstrap-daterangepicker/daterangepicker.js"></script>
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
     <!-- Template JS File -->
     <script src="<?= base_url() ?>templates/assets/js/scripts.js"></script>
     <script src="<?= base_url() ?>templates/assets/js/custom.js"></script>
 
-    <!-- Page Specific JS File -->
-    <script src="<?= base_url('templates/assets/js/page/features-post-create.js') ?>"></script>
+
 
     <script>
         $(document).ready(function() {
+
+            window.setTimeout(function() {
+                $(".alert").fadeTo(500, 0).slideUp(500, function() {
+                    $(this).remove();
+                });
+            }, 4000);
+
+            const datas = document.querySelectorAll('#idbooking-modal,#nama-modal,#email-modal,#gender-modal,#nomorwa-modal,#id');
+
             $('#form-pemesanan').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
@@ -98,15 +107,117 @@
                     cache: false,
                     async: false,
                     success: function(result) {
-                        console.log(result);
+                        if (result == 'failed') {
+                            swal("Gagal!", "Data input tidak valid!", "error");
+                        } else {
+                            $('#invoice1').modal('show');
+                            var todo = JSON.parse(result);
 
-                        $('#invoice1').modal('show');
-                        event.preventDefault();
+                            console.log(todo);
+
+                            $.each(todo, function(index, element) {
+                                for (let i = 0; i < datas.length; i++) {
+                                    datas[0].innerHTML = element.id_booking;
+                                    datas[1].innerHTML = element.nama_client;
+                                    datas[2].innerHTML = element.email_client;
+                                    datas[3].innerHTML = 'laki-laki';
+                                    datas[4].innerHTML = element.no_contact;
+                                    datas[5].innerHTML = element.id_booking;
+                                }
+                                document.getElementById("id-booking-modal").setAttribute("value", element.id_booking);
+                                document.getElementById("id-client-modal").setAttribute("value", element.id_client);
+                                document.getElementById("id-transaksi-modal").setAttribute("value", element.id_transaksi);
+                            })
+
+                            event.preventDefault();
+                        }
+
                     }
                 });
             })
+            $('#upload-pembayaran').click(function(e) {
+                e.preventDefault();
+                $('#invoice3').modal('show');
+
+            })
+            $('#form-pembayaran').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '<?= base_url('home/id_booking_upload_pembayaran') ?>',
+                    type: 'post',
+                    mimeType: "multipart/form-data",
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    async: false,
+                    success: function(result) {
+                        console.log(result);
+                        swal("Berhasil!", "Pembayaran anda terkirim!", "success");
+                        $('#invoice3').modal('hide');
+                        setTimeout("location.reload(true);",4000);
+                    }
+                });
+            })
+            $(".custom-file-input").on("change", function() {
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+            $(document).on("click", ".browse", function() {
+                var file = $(this).parents().find(".file");
+                file.trigger("click");
+            });
+            $('input[type="file"]').change(function(e) {
+                var fileName = e.target.files[0].name;
+                $("#file").val(fileName);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    // get loaded data and render thumbnail.
+                    document.getElementById("preview").src = e.target.result;
+                };
+                // read the image file as a data URL.
+                reader.readAsDataURL(this.files[0]);
+            });
         })
+
+        function metode(value) {
+            document.querySelector("input[name='metode']").setAttribute("value", value);
+        }
+        function sortTable() {
+            $('#element').filter(function() {
+                const data = $(this).find('.elementData').sort(function(a, b) {
+                    return +$(a).data('value') - +$(b).data('value');
+                }).appendTo(data);
+            });
+        }
+
+        function sortMeBy(arg, sel, elem, order) {
+            var $selector = $(sel),
+                $element = $selector.children(elem);
+
+            $element.sort(function(a, b) {
+                var an = parseInt(a.getAttribute(arg)),
+                    bn = parseInt(b.getAttribute(arg));
+                if (order == 'asc') {
+                    if (an > bn)
+                        return 1;
+                    if (an < bn)
+                        return -1;
+                } else if (order == 'desc') {
+                    if (an < bn)
+                        return 1;
+                    if (an > bn)
+                        return -1;
+                }
+                return 0;
+            });
+
+            $element.detach().appendTo($selector);
+        }
     </script>
+    <!-- Page Specific JS File -->
+    <script src="<?= base_url('templates/assets/js/page/features-post-create.js') ?>"></script>
 
 </body>
 

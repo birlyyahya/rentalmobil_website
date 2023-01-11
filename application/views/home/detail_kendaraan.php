@@ -31,7 +31,7 @@
                 <div class="col-8">
                     <div class="row">
                         <div class="col-6">
-                            <img src="<?= base_url('templates') ?>/assets/img/products/audi.png" alt="" class="w-100">
+                            <img src="<?= base_url('templates') ?>/assets/img/products/<?= $kendaraan[0]['gambar'] ?>" alt="" class="w-100">
                         </div>
                         <div class="col-6">
                             <div class="card-body">
@@ -43,7 +43,7 @@
                                             <div class="col-12 pt-3">
                                                 <div class="d-flex justify-content-between">
                                                     <p><i class="fa fa-user mr-2"></i> <?= ucwords($kendaraan[0]['seats']) ?> Kursi</p>
-                                                    <p><i class="fa fa-suitcase mr-2"></i> 20L</p>
+                                                    <p><i class="fa fa-gas-pump  mr-2"></i> 45L</p>
                                                 </div>
                                             </div>
                                             <div class="col-12">
